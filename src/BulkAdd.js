@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { Toggle } from "./Components";
+import { v4 as uuid } from "uuid";
 
 function Radio({ children, group, checked, onChange, disabled }) {
   return (
@@ -31,8 +32,27 @@ export default function BulkAdd({ setTerms, onClose }) {
   const [termSep, setTermSep] = useState({ str: "\n", custom: false });
   const [defSep, setDefSep] = useState({ str: "-", custom: false });
 
-  function handleSubmit(evt) {
+  const termsInput = useRef();
+
+  async function handleSubmit(evt) {
     evt.preventDefault();
+
+    let result = [];
+    for (const s of termsInput.current.value.split(termSep.str)) {
+      let sArray = s.split(defSep.str, 2);
+      let newT = {
+        word: sArray[0].trim(),
+        definition: sArray.length >= 2 ? sArray[1].trim() : "",
+        id: uuid()
+      };
+      if (newT.word && newT.definition)
+        result.push(newT);
+    }
+
+    if (result.length) {
+      setTerms(prevT => [...prevT, ...result]);
+      onClose();
+    }
   }
 
   const placeholder = Array.from({ length: 2 })
@@ -42,7 +62,6 @@ export default function BulkAdd({ setTerms, onClose }) {
     )
     .join(TERM_SEPS[termSep.str] || termSep.str);
 
-  console.log(placeholder);
 
   return (
     <div className="bg-emerald-50 p-6 border-b border-gray-300">
@@ -57,9 +76,12 @@ export default function BulkAdd({ setTerms, onClose }) {
           </label>
           {/* <TextInput placeholder="Enter some words..." isTextarea inputClass="resize-none w-full max-w-screen-xl" /> */}
           <textarea
-            className="min-h-[6em] w-full border rounded-md p-3"
+            className="min-h-[10em] w-full border rounded-md p-3"
             placeholder={placeholder}
+            ref={termsInput}
           />
+
+          <p className="text-gray-600 mb-4 text-sm">*Whitespace before and after terms/definitions will be removed.</p>
 
           <div className="text-gray-700 mt-2 flex gap-x-16 gap-y-2 flex-wrap items-center">
             <div>
@@ -141,7 +163,7 @@ export default function BulkAdd({ setTerms, onClose }) {
 
             <div>
               <p className="font-bold mb-1">Add definitions</p>
-              <Toggle />
+              <Toggle disabled />
             </div>
 
             <button
@@ -152,6 +174,7 @@ export default function BulkAdd({ setTerms, onClose }) {
               Add Terms
             </button>
           </div>
+
         </form>
       </div>
     </div>

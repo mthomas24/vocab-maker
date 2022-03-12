@@ -1,0 +1,2 @@
+- Make buttons on header when exporting
+  - Buttons: back, reset formatting, copy to clipboard, download
