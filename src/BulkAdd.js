@@ -2,10 +2,11 @@ import { useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { Toggle } from "./Components";
 import { v4 as uuid } from "uuid";
+import { motion } from "framer-motion";
 
 function Radio({ children, group, checked, onChange, disabled }) {
   return (
-    <label className="">
+    <label>
       <input
         className="mr-2 form-radio text-emerald-600 border-gray-300 focus:ring-emerald-600 focus:ring-1"
         type="radio"
@@ -45,8 +46,7 @@ export default function BulkAdd({ setTerms, onClose }) {
         definition: sArray.length >= 2 ? sArray[1].trim() : "",
         id: uuid()
       };
-      if (newT.word && newT.definition)
-        result.push(newT);
+      if (newT.word && newT.definition) result.push(newT);
     }
 
     if (result.length) {
@@ -62,9 +62,10 @@ export default function BulkAdd({ setTerms, onClose }) {
     )
     .join(TERM_SEPS[termSep.str] || termSep.str);
 
-
   return (
-    <div className="bg-emerald-50 p-6 border-b border-gray-300">
+    <motion.div
+      className="bg-emerald-50 p-6 border-b border-gray-300"
+    >
       <MdClose
         className="ml-auto w-6 h-6 text-gray-600 hover:text-gray-600/60 transition cursor-pointer -mb-2"
         onClick={onClose}
@@ -81,7 +82,9 @@ export default function BulkAdd({ setTerms, onClose }) {
             ref={termsInput}
           />
 
-          <p className="text-gray-600 mb-4 text-sm">*Whitespace before and after terms/definitions will be removed.</p>
+          <p className="text-gray-600 mb-4 text-sm">
+            *Whitespace before and after terms/definitions will be removed.
+          </p>
 
           <div className="text-gray-700 mt-2 flex gap-x-16 gap-y-2 flex-wrap items-center">
             <div>
@@ -174,9 +177,8 @@ export default function BulkAdd({ setTerms, onClose }) {
               Add Terms
             </button>
           </div>
-
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

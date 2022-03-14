@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { v4 as uuid } from "uuid";
 import { addModal, removeModal } from "./globalState";
@@ -41,23 +41,19 @@ export function TextInput({
 }
 
 export function Modal({ children, open, onClose, classNames, noEscape }) {
-  function handleClose() {
-    onClose();
-  }
-
   useEffect(() => {
     // console.log("key thingy");
     function handleKey(e) {
       if (e?.code !== "Escape" || noEscape) return;
       // console.log("escaped")
-      handleClose();
+      onClose();
       window.removeEventListener("keydown", handleKey);
     }
 
     window.addEventListener("keydown", handleKey);
 
     return () => window.removeEventListener("keydown", handleKey);
-  }, [onClose, handleClose]);
+  }, [onClose, noEscape]);
 
   useEffect(() => {
     if (open) addModal();
@@ -68,7 +64,7 @@ export function Modal({ children, open, onClose, classNames, noEscape }) {
 
   return createPortal(
     <>
-      <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="absolute inset-0 flex justify-center items-center backdrop-blur-sm pointer-events-none">
         <div className={`bg-white rounded-xl p-6 pointer-events-auto ${classNames}`}>
           {children}
@@ -89,8 +85,8 @@ export function Toggle({ defaultOn, onChange, disabled }) {
         on ? "bg-green-500" : "bg-neutral-400"
       } ${disabled ? "opacity-30 pointer-events-none" : ""} w-12 h-6 transition`}
       onClick={() => {
-        setOn(!on)
-        onChange()
+        setOn(!on);
+        onChange();
       }}
     >
       <div
@@ -100,6 +96,14 @@ export function Toggle({ defaultOn, onChange, disabled }) {
       >
         <div className="rounded-full bg-white w-3/4 h-3/4" />
       </div>
+    </div>
+  );
+}
+
+export function MainContainer({ children }) {
+  return (
+    <div className="flex justify-center">
+      <div className="mx-6 mt-6 max-w-screen-xl grow print:m-0">{children}</div>
     </div>
   );
 }
