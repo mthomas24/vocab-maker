@@ -1,2 +1,2 @@
-- Make buttons on header when exporting
-  - Buttons: back, reset formatting, copy to clipboard, download
+- FIX BUG WHERE CARDS GET ALL MESSED UP AFTER YOU CLOSE THE BULK ADD MENU
+- everything is generally buggy now with the animations

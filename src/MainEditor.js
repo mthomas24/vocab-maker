@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BulkAdd from "./BulkAdd";
 import Header, { HeaderButton } from "./Header";
 import { MainContainer, Modal, newTerm, TextInput } from "./Components";
@@ -8,16 +8,43 @@ import {
   MdFilterList,
   MdUpload,
   MdDelete,
-  MdDragIndicator
+  MdDragIndicator,
+  MdFilterListAlt
 } from "react-icons/md";
-import { motion, Reorder, useDragControls } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  Reorder,
+  useDragControls,
+  useMotionValue
+} from "framer-motion";
 
-function TermCard({ term, idx, remove, update }) {
+function TermCard({ term, idx, remove, update, shouldAnimate }) {
   const controls = useDragControls();
 
+  const [beingDragged, setBeingDragged] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("select-none", beingDragged);
+  }, [beingDragged]);
+
   return (
-    <Reorder.Item value={term} dragControls={controls} dragListener={false}>
-      <motion.div className="mb-5 bg-white rounded-lg p-4">
+    <Reorder.Item
+      value={term}
+      dragControls={controls}
+      dragListener={false}
+      onDragEnd={() => {
+        console.log("drag ended");
+        setBeingDragged(false);
+      }}
+      onDragStart={() => setBeingDragged(true)}
+    >
+      <motion.div
+        animate={shouldAnimate && { scale: 1, opacity: 1 }}
+        initial={shouldAnimate && { scale: 0.8, opacity: 0 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+        className={`mb-5 bg-white rounded-lg p-4 ${beingDragged ? "shadow-lg" : ""}`}
+      >
         <div className="flex items-center gap-2 text-gray-600">
           <h4 className="text-lg font-semibold mr-auto">{idx + 1}</h4>
           <MdDragIndicator
@@ -59,13 +86,19 @@ export default function MainEditor({ terms, setTerms }) {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [clearOpen, setClearOpen] = useState(false);
 
+  const shouldAnimateCards = useRef(false);
+
+  useEffect(() => {
+    shouldAnimateCards.current = true;
+  }, [terms]);
+
   return (
     <>
       <Header>
         <HeaderButton
           onClick={() => setTerms(prevT => prevT.filter(t => t.word || t.definition))}
           txt="Clear Blank Terms"
-          Icn={MdFilterList}
+          Icn={MdFilterListAlt}
         />
         <HeaderButton
           onClick={() => setClearOpen(true)}
@@ -103,7 +136,9 @@ export default function MainEditor({ terms, setTerms }) {
         />
         <HeaderButton txt="Export" to="/export" Icn={MdDownload} />
       </Header>
-      {bulkOpen && <BulkAdd setTerms={setTerms} onClose={() => setBulkOpen(false)} />}
+
+      <BulkAdd setTerms={setTerms} onClose={() => setBulkOpen(false)} open={bulkOpen} />
+
       <MainContainer>
         <Reorder.Group values={terms} onReorder={setTerms}>
           {terms.map((t, idx) => (
@@ -111,6 +146,7 @@ export default function MainEditor({ terms, setTerms }) {
               term={t}
               idx={idx}
               key={t.id}
+              shouldAnimate={shouldAnimateCards.current}
               remove={() =>
                 setTerms(prevTerms => [
                   ...prevTerms.slice(0, idx),
@@ -126,12 +162,17 @@ export default function MainEditor({ terms, setTerms }) {
               }
             />
           ))}
-          <Reorder.Item as="div" className="bg-white rounded-lg p-5 flex justify-center 
-              items-center text-lg w-full relative mb-5">
+          <Reorder.Item
+            drag={false}
+            as="div"
+            className="bg-white rounded-lg p-5 flex justify-center 
+              items-center text-lg w-full relative mb-5"
+          >
             <button
               className="border-b-emerald-300 border-b-4 pb-1 hover:px-4 transition-all duration-200 
                 font-bold text-neutral-700 after:inset-0 after:absolute"
-              onClick={() => setTerms(prevT => [...prevT, newTerm()])}>
+              onClick={() => setTerms(prevT => [...prevT, newTerm()])}
+            >
               + New Term
             </button>
           </Reorder.Item>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { v4 as uuid } from "uuid";
 import { addModal, removeModal } from "./globalState";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const newTerm = (wrd = "", def = "") => ({
   word: wrd,
@@ -57,20 +58,40 @@ export function Modal({ children, open, onClose, classNames, noEscape }) {
 
   useEffect(() => {
     if (open) addModal();
-    else removeModal();
+    // else removeModal();
   }, [open]);
 
-  if (!open) return null;
 
   return createPortal(
-    <>
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="absolute inset-0 flex justify-center items-center backdrop-blur-sm pointer-events-none">
-        <div className={`bg-white rounded-xl p-6 pointer-events-auto ${classNames}`}>
-          {children}
-        </div>
-      </div>
-    </>,
+    <AnimatePresence exitBeforeEnter={true} onExitComplete={removeModal}>
+      {open && (
+        <motion.div
+          animate={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="absolute inset-0"
+        >
+          <div
+            className="absolute inset-0 bg-black/50" onClick={onClose}
+            // animate={{ opacity: 1 }}
+            // initial={{ opacity: 0 }}
+            // exit={{ opacity: 0 }}
+            // transition={{ duration: 0.1 }}
+          />
+          <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+            <motion.div
+              animate={{ scale: 1 }}
+              initial={{ scale: 0.7 }}
+              // exit={{ scale: 0.0 }}
+              className={`bg-white rounded-xl p-6 pointer-events-auto ${classNames}`}
+            >
+              {children}
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.getElementById("portal")
   );
 }

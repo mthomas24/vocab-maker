@@ -27,7 +27,7 @@ export default function ExportEditor({ terms }) {
         Back
       </Link>
       <div className="bg-white rounded-lg shadow-lg p-5 mb-6 leading-loose print:shadow-none
-        print:bg-red-500 print:p-0 print:rounded">
+        print:p-0 print:rounded">
         {terms.map((term, idx) => (
           <div key={term.id}>
             <p><span className={boldTerms ? "font-bold" : ""}>{term.word}</span>{termSep.str}{term.definition}</p>
