@@ -1,2 +1,1 @@
-- FIX BUG WHERE CARDS GET ALL MESSED UP AFTER YOU CLOSE THE BULK ADD MENU
 - everything is generally buggy now with the animations

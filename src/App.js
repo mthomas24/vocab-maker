@@ -26,7 +26,7 @@ function App() {
   }, [terms]);
 
   useEffect(() => {
-    document.body.classList.add(...("bg-gray-200 min-h-screen print:bg-none".split(" ")));
+    document.body.classList.add(...("bg-gray-200 min-h-screen print:bg-transparent".split(" ")));
   }, []);
 
   
