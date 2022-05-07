@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Routes } from "react-router-dom";
 import MainEditor from "./MainEditor";
 import ExportEditor from "./ExportEditor";
-import { newTerm } from "./Components";
+import { newTerm } from "./components";
 
 function App() {
   const [terms, setTerms] = useState(() => {

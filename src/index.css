@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* .form-input, .form-textarea, .form-multiselect, .form-checkbox, .form-radio {
+  
+} */
+
+.form-select {
+  @apply focus:border-emerald-700 border;
+}
+
 body {
   /* font-family: 'Roboto', sans-serif; */
   font-family: 'Inter', sans-serif;

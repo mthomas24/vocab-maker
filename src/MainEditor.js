@@ -1,22 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import BulkAdd from "./BulkAdd";
 import Header, { HeaderButton } from "./Header";
-import { MainContainer, Modal, newTerm, TextInput } from "./Components";
+import { MainContainer, Modal, newTerm, TextInput } from "./components";
 import {
   MdClearAll,
   MdDownload,
-  MdFilterList,
   MdUpload,
   MdDelete,
   MdDragIndicator,
   MdFilterListAlt
 } from "react-icons/md";
 import {
-  AnimatePresence,
   motion,
   Reorder,
   useDragControls,
-  useMotionValue
 } from "framer-motion";
 
 function TermCard({ term, idx, remove, update, shouldAnimate }) {
@@ -43,7 +40,8 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
         animate={shouldAnimate && { scale: 1, opacity: 1 }}
         initial={shouldAnimate && { scale: 0.8, opacity: 0 }}
         transition={{ delay: 0.1, duration: 0.3 }}
-        className={`mb-5 bg-white rounded-lg p-4 ${beingDragged ? "shadow-lg" : ""}`}
+        className={`mb-5 bg-white rounded-lg p-4 transition duration-200 ${beingDragged ? "shadow-lg" : ""}`}
+        style={{ transitionProperty: "box-shadow" }}
       >
         <div className="flex items-center gap-2 text-gray-600">
           <h4 className="text-lg font-semibold mr-auto">{idx + 1}</h4>
@@ -106,7 +104,7 @@ export default function MainEditor({ terms, setTerms }) {
           Icn={MdClearAll}
         />
         <Modal open={clearOpen} onClose={() => setClearOpen(false)} classNames="m-4">
-          <div className="text-neutral-800">
+          <div className="text-gray-800">
             <p className="mb-6">
               Are you sure you want to delete all the terms? This action cannot be undone.
             </p>
@@ -170,7 +168,7 @@ export default function MainEditor({ terms, setTerms }) {
           >
             <button
               className="border-b-emerald-300 border-b-4 pb-1 hover:px-4 transition-all duration-200 
-                font-bold text-neutral-700 after:inset-0 after:absolute"
+                font-bold text-gray-700 after:inset-0 after:absolute"
               onClick={() => setTerms(prevT => [...prevT, newTerm()])}
             >
               + New Term

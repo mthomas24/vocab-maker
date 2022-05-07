@@ -1,24 +1,9 @@
 import { useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
-import { Toggle } from "./Components";
+import { Toggle, Radio } from "./components";
 import { v4 as uuid } from "uuid";
 import { motion } from "framer-motion";
 
-function Radio({ children, group, checked, onChange, disabled }) {
-  return (
-    <label>
-      <input
-        className="mr-2 form-radio text-emerald-600 border-gray-300 focus:ring-emerald-600 focus:ring-1"
-        type="radio"
-        name={group}
-        checked={checked}
-        onChange={onChange}
-        disabled={disabled}
-      />
-      {children}
-    </label>
-  );
-}
 
 const DEF_SEPS = {
   ":": ": ",
@@ -32,6 +17,7 @@ const TERM_SEPS = {
 export default function BulkAdd({ setTerms, onClose, open }) {
   const [termSep, setTermSep] = useState({ str: "\n", custom: false });
   const [defSep, setDefSep] = useState({ str: "-", custom: false });
+  const [addDefs, setAddDefs] = useState(true);
 
   const termsInput = useRef();
   const termSepInput = useRef();
@@ -48,8 +34,11 @@ export default function BulkAdd({ setTerms, onClose, open }) {
         definition: sArray.length >= 2 ? sArray[1].trim() : "",
         id: uuid()
       };
-      if (newT.word && newT.definition) result.push(newT);
+      console.log(newT)
+      if (newT.word || newT.definition) result.push(newT);
     }
+
+    console.log(result);
 
     if (result.length) {
       setTerms(prevT => [...prevT, ...result]);
@@ -94,7 +83,7 @@ export default function BulkAdd({ setTerms, onClose, open }) {
             *Whitespace before and after terms/definitions will be removed.
           </p>
 
-          <div className="text-gray-700 mt-2 flex gap-x-16 gap-y-2 flex-wrap items-center">
+          <div className="text-gray-700 mt-2 flex gap-x-16 gap-y-4 flex-wrap items-center">
             <div>
               <p className="font-bold">Between terms</p>
               <div className="flex gap-6 items-center">
@@ -188,12 +177,20 @@ export default function BulkAdd({ setTerms, onClose, open }) {
 
             <div>
               <p className="font-bold mb-1">Add definitions</p>
-              <Toggle disabled />
+              <Toggle defaultOn={addDefs} onChange={setAddDefs} />
+            </div>
+            
+            <div className={addDefs ? "" : "hidden"}>
+              <p className="font-bold">Definition sources</p>
+              <select className="form-select rounded-md">
+                <option>Test</option>
+                <option>asdasd</option>
+              </select>
             </div>
 
             <button
               className="ml-auto bg-emerald-600 text-white text-lg px-6 py-2 
-            rounded-full hover:bg-emerald-600/70 transition"
+            rounded hover:bg-emerald-600/70 transition"
               type="submit"
             >
               Add Terms

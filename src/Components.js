@@ -10,6 +10,22 @@ export const newTerm = (wrd = "", def = "") => ({
   id: uuid()
 });
 
+export function Radio({ children, group, checked, onChange, disabled }) {
+  return (
+    <label>
+      <input
+        className="mr-2 form-radio text-emerald-600 border-gray-300 focus:ring-emerald-600 focus:ring-1"
+        type="radio"
+        name={group}
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+      />
+      {children}
+    </label>
+  );
+}
+
 export function TextInput({
   labelText,
   placeholder,
@@ -106,8 +122,8 @@ export function Toggle({ defaultOn, onChange, disabled }) {
         on ? "bg-green-500" : "bg-neutral-400"
       } ${disabled ? "opacity-30 pointer-events-none" : ""} w-12 h-6 transition`}
       onClick={() => {
+        onChange(!on);
         setOn(!on);
-        onChange();
       }}
     >
       <div
