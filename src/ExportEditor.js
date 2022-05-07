@@ -10,7 +10,7 @@ function Select({ val, onChange, options, label }) {
   return (
     <Listbox as="div" className="w-64 relative" value={val} onChange={onChange}>
       <p className="font-bold mb-1">{label}</p>
-      <Listbox.Button className="capitalize rounded-md bg-gray-50 py-1.5 w-full text-left px-3 relative">
+      <Listbox.Button className="border border-gray-300 capitalize rounded-md bg-gray-50 py-1.5 w-full text-left px-3 relative">
         <span className="truncate">{val}</span>
         <span className="h-full flex items-center absolute right-2 top-0">
           <svg
@@ -69,11 +69,21 @@ export default function ExportEditor({ terms }) {
   const [termSep, setTermSep] = useState("dash"); // "dash" | "colon"
   const [fontSize, setFontSize] = useState("16px");
 
+  const TERM_SEPS = { dash: " - ", colon: ": " };
+
   return (
     <>
       <Header>
         <HeaderButton txt="Edit Terms" to="/" Icn={MdEdit} />
-        <HeaderButton txt="Copy to Clipboard" Icn={MdCopyAll} />
+        <HeaderButton
+          txt="Copy to Clipboard"
+          onClick={() =>
+            navigator.clipboard.writeText(
+              terms.map(t => t.word + TERM_SEPS[termSep] + t.definition).join("\n")
+            )
+          }
+          Icn={MdCopyAll}
+        />
         <HeaderButton txt="Print" Icn={MdPrint} onClick={window.print} />
       </Header>
       <MainContainer>
@@ -109,7 +119,17 @@ export default function ExportEditor({ terms }) {
             onChange={setFontSize}
             val={fontSize}
             label="Font Size"
-            options={["12px", "14px", "16px", "18px", "20px", "22px", "24px", "28px", "32px"]}
+            options={[
+              "12px",
+              "14px",
+              "16px",
+              "18px",
+              "20px",
+              "22px",
+              "24px",
+              "28px",
+              "32px"
+            ]}
           />
         </div>
 
@@ -139,7 +159,7 @@ export default function ExportEditor({ terms }) {
               >
                 {term.word}
               </span>
-              {{ dash: " - ", colon: ": " }[termSep]}
+              {TERM_SEPS[termSep]}
               {term.definition}
             </li>
           ))}
