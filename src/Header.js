@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export function HeaderButton({ onClick, txt, Icn, to }) {
   const props = {
     className:
-      "rounded-sm px-1 md:px-2 py-1 bg-emerald-700 text-white hover:bg-emerald-600 transition select-none flex items-center gap-1",
+      "rounded-sm px-1 md:px-2 py-1 bg-emerald-700 text-white hover:bg-emerald-600 transition focus:outline-none focus:ring-white focus:ring-2 select-none flex items-center gap-1",
     onClick: onClick,
     children: (
       <>

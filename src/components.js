@@ -37,7 +37,7 @@ export function TextInput({
   onBlur
 }) {
   let inputProps = {
-    className: `rounded-md bg-gray-100 px-2 py-1 border mm-focus:outline-emerald-400 ${inputClass}`,
+    className: `rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2 ${inputClass}`,
     type: "text",
     defaultValue: defaultVal,
     placeholder: placeholder,

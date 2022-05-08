@@ -45,14 +45,16 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
       >
         <div className="flex items-center gap-2 text-gray-600">
           <h4 className="text-lg font-semibold mr-auto">{idx + 1}</h4>
-          <MdDragIndicator
-            className="w-5 h-5 hover:opacity-60 hover:cursor-grab transition"
-            onPointerDown={e => controls.start(e)}
-          />
-          <MdDelete
-            className="w-5 h-5 hover:opacity-60 hover:cursor-pointer transition"
-            onClick={remove}
-          />
+          <button onPointerDown={e => controls.start(e)}>
+            <MdDragIndicator
+              className="w-5 h-5 hover:opacity-60 hover:cursor-grab transition"
+            />
+          </button>
+          <button onClick={remove}>
+            <MdDelete
+              className="w-5 h-5 hover:opacity-60 hover:cursor-pointer transition"
+            />
+          </button>
         </div>
         <hr className="-mx-4 my-3" />
         <div className="flex gap-6 flex-wrap">

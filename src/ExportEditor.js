@@ -10,7 +10,7 @@ function Select({ val, onChange, options, label }) {
   return (
     <Listbox as="div" className="w-64 relative" value={val} onChange={onChange}>
       <p className="font-bold mb-1">{label}</p>
-      <Listbox.Button className="border border-gray-300 capitalize rounded-md bg-gray-50 py-1.5 w-full text-left px-3 relative">
+      <Listbox.Button className="border border-gray-300 capitalize rounded-md bg-gray-50 py-1.5 w-full text-left px-3 relative focus:outline-none focus:ring-emerald-400 focus:ring-2">
         <span className="truncate">{val}</span>
         <span className="h-full flex items-center absolute right-2 top-0">
           <svg
@@ -30,7 +30,7 @@ function Select({ val, onChange, options, label }) {
       </Listbox.Button>
       <Listbox.Options
         as="div"
-        className="bg-gray-50 py-1 rounded-md mt-2 absolute shadow-md w-full"
+        className="bg-gray-50 py-1 rounded-md mt-2 absolute shadow-md w-full focus:outline-none"
       >
         {options.map(s => (
           <Listbox.Option

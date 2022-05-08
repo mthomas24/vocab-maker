@@ -4,7 +4,6 @@ import { Toggle, Radio } from "./components";
 import { v4 as uuid } from "uuid";
 import { motion } from "framer-motion";
 
-
 const DEF_SEPS = {
   ":": ": ",
   "-": " - "
@@ -23,6 +22,31 @@ export default function BulkAdd({ setTerms, onClose, open }) {
   const termSepInput = useRef();
   const defSepInput = useRef();
 
+  /**
+   *
+   * @param {any[]} terms
+   */
+  const getDefinitions = terms =>
+    new Promise(resolve => {
+      let requests = 0;
+      let termsCopy = JSON.parse(JSON.stringify(terms));
+      for (const term of termsCopy) {
+        if (!term.definition) {
+          requests++;
+          fetch(
+            `https://api.yodacode.xyz/explain/${encodeURIComponent(term.word)}?limit=1`
+          )
+            .then(res => res.json())
+            .then(data => {
+              if (data.type !== "error") term.definition = data.value;
+              requests--;
+
+              if (requests === 0) resolve(termsCopy);
+            });
+        }
+      }
+    });
+
   async function handleSubmit(evt) {
     evt.preventDefault();
 
@@ -34,11 +58,15 @@ export default function BulkAdd({ setTerms, onClose, open }) {
         definition: sArray.join(defSep.str).trim(),
         id: uuid()
       };
-      console.log(newT)
-      if (newT.word || newT.definition) result.push(newT);
+      if (newT.word) result.push(newT);
     }
 
-    console.log(result);
+    console.table(result);
+
+    if (addDefs)
+      result = await getDefinitions(result);
+
+    console.table(result);
 
     if (result.length) {
       setTerms(prevT => [...prevT, ...result]);
@@ -176,10 +204,10 @@ export default function BulkAdd({ setTerms, onClose, open }) {
             </div>
 
             <div>
-              <p className="font-bold mb-1">Add definitions</p>
-              <Toggle defaultOn={addDefs} onChange={setAddDefs} disabled />
+              <p className="font-bold mb-1">Search for Definitions</p>
+              <Toggle defaultOn={addDefs} onChange={setAddDefs} />
             </div>
-            
+
             <button
               className="ml-auto bg-emerald-600 text-white text-lg px-6 py-2 
             rounded hover:bg-emerald-600/70 transition"
