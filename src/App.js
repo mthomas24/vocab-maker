@@ -11,13 +11,13 @@ function App() {
       try {
         return JSON.parse(localTerms);
       } catch(e) {
-        console.log(e);
+        // console.log(e);
       }
     }
+
     return [
-      newTerm("dad", "no es tu madre"),
-      newTerm("mom", "ur mom gae"),
-      newTerm("john", "a very handsome, smooth, and attractive young man!")
+      newTerm("John", "A very handsome and smart young man!"),
+      newTerm("Ian", "Another very intelligent young man!")
     ];
   });
 

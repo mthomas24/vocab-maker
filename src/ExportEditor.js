@@ -87,14 +87,14 @@ export default function ExportEditor({ terms }) {
         <HeaderButton txt="Print" Icn={MdPrint} onClick={window.print} />
       </Header>
       <MainContainer>
-        <Link
+        {/* <Link
           className="mb-4 flex items-center gap-1 text-lg text-gray-800 w-fit
           px-1 py-0.5 pr-2 rounded-md hover:bg-gray-100/60 transition print:hidden"
           to="/"
         >
           <MdArrowBackIosNew className="inline-block text-sm" />
           Back
-        </Link>
+        </Link> */}
 
         <div className="print:hidden flex flex-wrap gap-x-16 gap-y-4 mb-8">
           <Select

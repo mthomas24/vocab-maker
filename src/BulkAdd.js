@@ -17,7 +17,7 @@ const TERM_SEPS = {
 export default function BulkAdd({ setTerms, onClose, open }) {
   const [termSep, setTermSep] = useState({ str: "\n", custom: false });
   const [defSep, setDefSep] = useState({ str: "-", custom: false });
-  const [addDefs, setAddDefs] = useState(true);
+  const [addDefs, setAddDefs] = useState(false);
 
   const termsInput = useRef();
   const termSepInput = useRef();
@@ -177,17 +177,9 @@ export default function BulkAdd({ setTerms, onClose, open }) {
 
             <div>
               <p className="font-bold mb-1">Add definitions</p>
-              <Toggle defaultOn={addDefs} onChange={setAddDefs} />
+              <Toggle defaultOn={addDefs} onChange={setAddDefs} disabled />
             </div>
             
-            <div className={addDefs ? "" : "hidden"}>
-              <p className="font-bold">Definition sources</p>
-              <select className="form-select rounded-md">
-                <option>Test</option>
-                <option>asdasd</option>
-              </select>
-            </div>
-
             <button
               className="ml-auto bg-emerald-600 text-white text-lg px-6 py-2 
             rounded hover:bg-emerald-600/70 transition"
