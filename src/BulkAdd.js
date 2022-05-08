@@ -28,10 +28,10 @@ export default function BulkAdd({ setTerms, onClose, open }) {
 
     let result = [];
     for (const s of termsInput.current.value.split(termSep.str)) {
-      let sArray = s.split(defSep.str, 2);
+      let sArray = s.split(defSep.str);
       let newT = {
-        word: sArray[0].trim(),
-        definition: sArray.length >= 2 ? sArray[1].trim() : "",
+        word: sArray.shift().trim(),
+        definition: sArray.join(defSep.str).trim(),
         id: uuid()
       };
       console.log(newT)
