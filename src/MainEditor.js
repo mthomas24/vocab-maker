@@ -45,12 +45,12 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
       >
         <div className="flex items-center gap-2 text-gray-600">
           <h4 className="text-lg font-semibold mr-auto">{idx + 1}</h4>
-          <button onPointerDown={e => controls.start(e)}>
+          <button onPointerDown={e => controls.start(e)} aria-label="Drag Card">
             <MdDragIndicator
               className="w-5 h-5 hover:opacity-60 hover:cursor-grab transition"
             />
           </button>
-          <button onClick={remove}>
+          <button onClick={remove} aria-label="Delete Card">
             <MdDelete
               className="w-5 h-5 hover:opacity-60 hover:cursor-pointer transition"
             />
