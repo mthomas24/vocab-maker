@@ -31,9 +31,9 @@ function DefinitionInput({ term, update }) {
       firstRender.current = false;
       return;
     }
-    console.log(term.word);
+    // console.log(term.word);
     populateChoices();
-  }, [term.word])
+  }, [term.word, populateChoices])
 
   function populateChoices() {
     // console.log("made requests for: " + term.word); return;
@@ -54,7 +54,7 @@ function DefinitionInput({ term, update }) {
       {/* Allows opening combobox options when the input is focused */}
       <Combobox.Button className="hidden" ref={btn} />
       <Combobox.Input
-        role=""
+        placeholder="Enter a definition..."
         className={TextInputStyles + " w-full"}
         onChange={e => setText(e.target.value)}
         onBlur={e => update({ ...term, definition: e.target.value })}
@@ -76,7 +76,6 @@ function DefinitionInput({ term, update }) {
 
   // return <TextInput
   //   labelText="Definition"
-  //   placeholder="Enter a definition..."
   //   onBlur={e => update({ ...term, definition: e.target.value })}
   // />
 }
@@ -96,7 +95,6 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
       dragControls={controls}
       dragListener={false}
       onDragEnd={() => {
-        console.log("drag ended");
         setBeingDragged(false);
       }}
       onDragStart={() => setBeingDragged(true)}
