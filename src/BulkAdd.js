@@ -100,7 +100,6 @@ export default function BulkAdd({ setTerms, onClose, open }) {
           <label className="text-gray-500 text-lg block mb-1">
             Copy paste some data here.
           </label>
-          {/* <TextInput placeholder="Enter some words..." isTextarea inputClass="resize-none w-full max-w-screen-xl" /> */}
           <textarea
             className="min-h-[10em] w-full border rounded-md p-3"
             placeholder={placeholder}

@@ -26,36 +26,39 @@ export function Radio({ children, group, checked, onChange, disabled }) {
   );
 }
 
-export function TextInput({
-  labelText,
-  placeholder,
-  defaultVal,
-  labelClass,
-  inputClass,
-  isTextarea,
-  onChange,
-  onBlur
-}) {
-  let inputProps = {
-    className: `rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2 ${inputClass}`,
-    type: "text",
-    defaultValue: defaultVal,
-    placeholder: placeholder,
-    onChange: onChange,
-    onBlur: onBlur
-  };
+export const TextInputStyles = "rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2";
+export const LabelStyles = "block text-sm text-gray-500 bopacity-70 mb-1 z-0";
 
-  return (
-    <>
-      {labelText && (
-        <label className={`block text-sm text-gray-500 bopacity-70 mb-1 ${labelClass}`}>
-          {labelText}
-        </label>
-      )}
-      {isTextarea ? <textarea {...inputProps} /> : <input {...inputProps} />}
-    </>
-  );
-}
+// export function TextInput({
+//   labelText,
+//   placeholder,
+//   defaultVal,
+//   labelClass,
+//   inputClass,
+//   isTextarea,
+//   onChange,
+//   onBlur
+// }) {
+//   let inputProps = {
+//     className: `rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2 ${inputClass}`,
+//     type: "text",
+//     defaultValue: defaultVal,
+//     placeholder: placeholder,
+//     onChange: onChange,
+//     onBlur: onBlur
+//   };
+
+//   return (
+//     <>
+//       {labelText && (
+//         <label className={`block text-sm text-gray-500 bopacity-70 mb-1 ${labelClass}`}>
+//           {labelText}
+//         </label>
+//       )}
+//       {isTextarea ? <textarea {...inputProps} /> : <input {...inputProps} />}
+//     </>
+//   );
+// }
 
 export function Modal({ children, open, onClose, classNames, noEscape }) {
   useEffect(() => {

@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import BulkAdd from "./BulkAdd";
 import Header, { HeaderButton } from "./Header";
-import { MainContainer, Modal, newTerm, TextInput } from "./components";
+import {
+  LabelStyles,
+  MainContainer,
+  Modal,
+  newTerm,
+  TextInputStyles
+} from "./components";
 import {
   MdClearAll,
   MdDownload,
@@ -10,11 +16,70 @@ import {
   MdDragIndicator,
   MdFilterListAlt
 } from "react-icons/md";
-import {
-  motion,
-  Reorder,
-  useDragControls,
-} from "framer-motion";
+import { motion, Reorder, useDragControls } from "framer-motion";
+import { Combobox } from "@headlessui/react";
+
+function DefinitionInput({ term, update }) {
+  const [text, setText] = useState(term.definition);
+  const [choices, setChoices] = useState([]);
+  // const [choicesOpen, setChoicesOpen] = useState(false);
+  const btn = useRef();
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    console.log(term.word);
+    populateChoices();
+  }, [term.word])
+
+  function populateChoices() {
+    // console.log("made requests for: " + term.word); return;
+    fetch(`https://api.yodacode.xyz/explain-v2/${encodeURIComponent(term.word)}?limit=4`)
+      .then(res => res.json())
+      .then(data => !data.error && setChoices(data.results.filter(r => r.value).map(r => r.value)));
+  }
+
+  // function truncateString(str, maxLen) {
+  //   if (str.length <= maxLen - 3) return str;
+  //   return str.substring(0, maxLen) + "...";
+  // }
+
+  return (
+    <>
+    <label className={LabelStyles}>Definition</label>
+    <Combobox value={text} onChange={setText}>
+      {/* Allows opening combobox options when the input is focused */}
+      <Combobox.Button className="hidden" ref={btn} />
+      <Combobox.Input
+        role=""
+        className={TextInputStyles + " w-full"}
+        onChange={e => setText(e.target.value)}
+        onBlur={e => update({ ...term, definition: e.target.value })}
+        onFocus={() => {
+          !choices.length && populateChoices();
+          !text && btn?.current.click();
+        }}
+      />
+      <Combobox.Options unmount={false} className="w-full rounded-md z-10">
+        {choices.filter(c => c.toLowerCase().includes(text.toLowerCase())).map(c => (
+          <Combobox.Option className={({ active }) => "truncate hover:cursor-pointer mt-2 px-4 py-1.5 rounded " + (active ? "bg-emerald-100 text-emerald-900" : "bg-gray-100")} key={c} value={c}>
+            {c}
+          </Combobox.Option>
+        ))}
+      </Combobox.Options>
+    </Combobox>
+    </>
+  );
+
+  // return <TextInput
+  //   labelText="Definition"
+  //   placeholder="Enter a definition..."
+  //   onBlur={e => update({ ...term, definition: e.target.value })}
+  // />
+}
 
 function TermCard({ term, idx, remove, update, shouldAnimate }) {
   const controls = useDragControls();
@@ -36,48 +101,42 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
       }}
       onDragStart={() => setBeingDragged(true)}
     >
-      <motion.div
+      <motion.form
+        autoComplete="off"
+        onSubmit={e => e.preventDefault()}
         animate={shouldAnimate && { scale: 1, opacity: 1 }}
         initial={shouldAnimate && { scale: 0.8, opacity: 0 }}
         transition={{ delay: 0.1, duration: 0.3 }}
-        className={`mb-5 bg-white rounded-lg p-4 transition duration-200 ${beingDragged ? "shadow-lg" : ""}`}
+        className={`mb-5 bg-white rounded-lg p-4 transition duration-200 ${
+          beingDragged ? "shadow-lg" : ""
+        }`}
         style={{ transitionProperty: "box-shadow" }}
       >
         <div className="flex items-center gap-2 text-gray-600">
           <h4 className="text-lg font-semibold mr-auto">{idx + 1}</h4>
           <button onPointerDown={e => controls.start(e)} aria-label="Drag Card">
-            <MdDragIndicator
-              className="w-5 h-5 hover:opacity-60 hover:cursor-grab transition"
-            />
+            <MdDragIndicator className="w-5 h-5 hover:opacity-60 hover:cursor-grab transition" />
           </button>
           <button onClick={remove} aria-label="Delete Card">
-            <MdDelete
-              className="w-5 h-5 hover:opacity-60 hover:cursor-pointer transition"
-            />
+            <MdDelete className="w-5 h-5 hover:opacity-60 hover:cursor-pointer transition" />
           </button>
         </div>
         <hr className="-mx-4 my-3" />
-        <div className="flex gap-6 flex-wrap">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-wrap">
           <div className="flex-grow">
-            <TextInput
-              labelText="Word"
+            <label className={LabelStyles}>Word</label>
+            <input
               placeholder="Enter a word..."
-              inputClass="w-full"
-              defaultVal={term.word}
+              className={TextInputStyles + " w-full"}
+              defaultValue={term.word}
               onBlur={e => update({ ...term, word: e.target.value })}
             />
           </div>
-          <div className="flex-grow">
-            <TextInput
-              labelText="Definition"
-              placeholder="Enter a definition..."
-              inputClass="w-full"
-              defaultVal={term.definition}
-              onBlur={e => update({ ...term, definition: e.target.value })}
-            />
+          <div className="flex-grow relative">
+            <DefinitionInput term={term} update={update} />
           </div>
         </div>
-      </motion.div>
+      </motion.form>
     </Reorder.Item>
   );
 }
