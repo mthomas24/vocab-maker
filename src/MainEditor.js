@@ -33,9 +33,13 @@ function DefinitionInput({ term, update }) {
     }
     // console.log(term.word);
     populateChoices();
-  }, [term.word, populateChoices])
+  }, [term.word])
 
   function populateChoices() {
+    if (!term.word.trim()) {
+      setChoices([]);
+      return;
+    }
     // console.log("made requests for: " + term.word); return;
     fetch(`https://api.yodacode.xyz/explain-v2/${encodeURIComponent(term.word)}?limit=4`)
       .then(res => res.json())
