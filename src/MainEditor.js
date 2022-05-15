@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import BulkAdd from "./BulkAdd";
 import Header, { HeaderButton } from "./Header";
 import {
+  getDefinitions,
   LabelStyles,
   MainContainer,
   Modal,
@@ -18,32 +19,31 @@ import {
 } from "react-icons/md";
 import { motion, Reorder, useDragControls } from "framer-motion";
 import { Combobox } from "@headlessui/react";
+import { TailSpin } from "react-loading-icons";
 
 function DefinitionInput({ term, update }) {
   const [text, setText] = useState(term.definition);
   const [choices, setChoices] = useState([]);
-  // const [choicesOpen, setChoicesOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const btn = useRef();
-  const firstRender = useRef(true);
 
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    // console.log(term.word);
-    populateChoices();
-  }, [term.word])
+  // useEffect(() => {
+  //   // console.log(term.word);
+  //   populateChoices();
+  // }, [term.word]);
 
   function populateChoices() {
+    if (loading) return;
     if (!term.word.trim()) {
       setChoices([]);
       return;
     }
     // console.log("made requests for: " + term.word); return;
-    fetch(`https://api.yodacode.xyz/explain-v2/${encodeURIComponent(term.word)}?limit=4`)
-      .then(res => res.json())
-      .then(data => !data.error && setChoices(data.results.filter(r => r.value).map(r => r.value)));
+    getDefinitions(term.word).then(data => {
+      setChoices(data);
+      setLoading(false);
+    });
+    setLoading(true);
   }
 
   // function truncateString(str, maxLen) {
@@ -53,28 +53,45 @@ function DefinitionInput({ term, update }) {
 
   return (
     <>
-    <label className={LabelStyles}>Definition</label>
-    <Combobox value={text} onChange={setText}>
-      {/* Allows opening combobox options when the input is focused */}
-      <Combobox.Button className="hidden" ref={btn} />
-      <Combobox.Input
-        placeholder="Enter a definition..."
-        className={TextInputStyles + " w-full"}
-        onChange={e => setText(e.target.value)}
-        onBlur={e => update({ ...term, definition: e.target.value })}
-        onFocus={() => {
-          !choices.length && populateChoices();
-          !text && btn?.current.click();
-        }}
-      />
-      <Combobox.Options unmount={false} className="w-full rounded-md z-10">
-        {choices.filter(c => c.toLowerCase().includes(text.toLowerCase())).map(c => (
-          <Combobox.Option className={({ active }) => "truncate hover:cursor-pointer mt-2 px-4 py-1.5 rounded " + (active ? "bg-emerald-100 text-emerald-900" : "bg-gray-100")} key={c} value={c}>
-            {c}
-          </Combobox.Option>
-        ))}
-      </Combobox.Options>
-    </Combobox>
+      <label className={LabelStyles}>Definition</label>
+      <Combobox value={text} onChange={setText}>
+        {/* Allows opening combobox options when the input is focused */}
+        <Combobox.Button className="hidden" ref={btn} />
+        <Combobox.Input
+          placeholder="Enter a definition..."
+          className={TextInputStyles + " w-full"}
+          onChange={e => setText(e.target.value)}
+          onBlur={e => update({ ...term, definition: e.target.value })}
+          onFocus={() => {
+            populateChoices();
+            !text && btn?.current.click();
+          }}
+        />
+        {loading ? (
+          <TailSpin
+            stroke="#d1d5db"
+            strokeWidth="4"
+            className="mt-3 h-7"
+          />
+        ) : (
+          <Combobox.Options unmount={false} className="w-full rounded-md z-10">
+            {choices
+              .filter(c => c.toLowerCase().includes(text.toLowerCase()))
+              .map(c => (
+                <Combobox.Option
+                  className={({ active }) =>
+                    "truncate hover:cursor-pointer mt-2 px-4 py-1.5 rounded " +
+                    (active ? "bg-emerald-100 text-emerald-900" : "bg-gray-100")
+                  }
+                  key={c}
+                  value={c}
+                >
+                  {c}
+                </Combobox.Option>
+              ))}
+          </Combobox.Options>
+        )}
+      </Combobox>
     </>
   );
 
@@ -232,7 +249,11 @@ export default function MainEditor({ terms, setTerms }) {
             <button
               className="border-b-emerald-300 border-b-4 pb-1 hover:px-4 transition-all duration-200 
                 font-bold text-gray-700 after:inset-0 after:absolute"
-              onClick={() => setTerms(prevT => [...prevT, newTerm()])}
+              onClick={e => {
+                setTerms(prevT => [...prevT, newTerm()]);
+                setTimeout(() => e.target.scrollIntoView({ behavior: "smooth" }), 0);
+                
+              }}
             >
               + New Term
             </button>

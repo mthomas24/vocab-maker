@@ -4,6 +4,28 @@ import { v4 as uuid } from "uuid";
 import { addModal, removeModal } from "./globalState";
 import { AnimatePresence, motion } from "framer-motion";
 
+
+let definitionsCache = new Map();
+
+/**
+ *
+ * @param {string} wrd
+ * @param {number} limit
+ * @returns {Promise<string[]>}
+ */
+export async function getDefinitions(wrd, limit = 4) {
+  let word = wrd.trim().toLowerCase();
+  if (definitionsCache.has(word)) return definitionsCache.get(word);
+  const res = await fetch(
+    `https://api.yodacode.xyz/explain-v2/${encodeURIComponent(word)}?limit=${limit}`
+  );
+  const data = await res.json();
+  // if (data.error) return;
+  const result = data.results.filter(r => r.value).map(r => r.value);
+  definitionsCache.set(word, result);
+  return result;
+}
+
 export const newTerm = (wrd = "", def = "") => ({
   word: wrd,
   definition: def,
@@ -26,7 +48,8 @@ export function Radio({ children, group, checked, onChange, disabled }) {
   );
 }
 
-export const TextInputStyles = "rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2";
+export const TextInputStyles =
+  "rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2";
 export const LabelStyles = "block text-sm text-gray-500 bopacity-70 mb-1 z-0";
 
 // export function TextInput({
@@ -80,7 +103,6 @@ export function Modal({ children, open, onClose, classNames, noEscape }) {
     // else removeModal();
   }, [open]);
 
-
   return createPortal(
     <AnimatePresence exitBeforeEnter={true} onExitComplete={removeModal}>
       {open && (
@@ -92,7 +114,8 @@ export function Modal({ children, open, onClose, classNames, noEscape }) {
           className="absolute inset-0"
         >
           <div
-            className="absolute inset-0 bg-black/50" onClick={onClose}
+            className="absolute inset-0 bg-black/50"
+            onClick={onClose}
             // animate={{ opacity: 1 }}
             // initial={{ opacity: 0 }}
             // exit={{ opacity: 0 }}

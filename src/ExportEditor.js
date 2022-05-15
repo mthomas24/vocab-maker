@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { MdArrowBackIosNew } from "react-icons/md";
-import { Link } from "react-router-dom";
 import { MainContainer } from "./components";
 import Header, { HeaderButton } from "./Header";
 import { MdEdit, MdCopyAll, MdPrint } from "react-icons/md";
