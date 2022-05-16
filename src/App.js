@@ -16,8 +16,8 @@ function App() {
     }
 
     return [
-      newTerm("John", "A very handsome and smart young man!"),
-      newTerm("Ian", "Another very intelligent young man!")
+      // newTerm("John", "A very handsome and smart young man!"),
+      newTerm("Ian", "A very intelligent young man!")
     ];
   });
 

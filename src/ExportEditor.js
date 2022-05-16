@@ -89,8 +89,14 @@ export default function ExportEditor({ terms }) {
           txt="Copy to Clipboard"
           onClick={() =>
             navigator.clipboard.writeText(
-              (title ? title + "\n" : "") +
-                terms.map(t => t.word + TERM_SEPS[termSep] + t.definition).join("\n")
+              (
+                title +
+                "\n" +
+                terms
+                  .filter(t => t.word || t.definition)
+                  .map(t => t.word + TERM_SEPS[termSep] + t.definition)
+                  .join("\n")
+              ).trim()
             )
           }
           Icn={MdCopyAll}
@@ -173,31 +179,33 @@ export default function ExportEditor({ terms }) {
             </h1>
           )}
           <ListElem style={listStyle}>
-            {terms.map(term => (
-              <li
-                key={term.id}
-                style={{ fontSize: fontSize }}
-                className={
-                  {
-                    none: "",
-                    bullets: "list-inside list-disc",
-                    numbers: "list-inside list-decimal"
-                  }[listStyle]
-                }
-              >
-                <span
+            {terms
+              .filter(t => t.word || t.definition)
+              .map(term => (
+                <li
+                  key={term.id}
+                  style={{ fontSize: fontSize }}
                   className={
-                    { bold: "font-bold", underline: "underline", italic: "italic" }[
-                      termStyle
-                    ] + (capitalTerms ? " capitalize" : "")
+                    {
+                      none: "",
+                      bullets: "list-inside list-disc",
+                      numbers: "list-inside list-decimal"
+                    }[listStyle]
                   }
                 >
-                  {term.word}
-                </span>
-                {TERM_SEPS[termSep]}
-                {term.definition}
-              </li>
-            ))}
+                  <span
+                    className={
+                      { bold: "font-bold", underline: "underline", italic: "italic" }[
+                        termStyle
+                      ] + (capitalTerms ? " capitalize" : "")
+                    }
+                  >
+                    {term.word}
+                  </span>
+                  {TERM_SEPS[termSep]}
+                  {term.definition}
+                </li>
+              ))}
           </ListElem>
         </div>
       </MainContainer>
