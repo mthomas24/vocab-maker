@@ -142,8 +142,7 @@ export function Toggle({ defaultOn, onChange, disabled }) {
   const [on, setOn] = useState(!!defaultOn);
 
   return (
-    <div
-      tabIndex="-1"
+    <button
       className={`mb-2 rounded-full cursor-pointer ${
         on ? "bg-green-500" : "bg-neutral-400"
       } ${disabled ? "opacity-30 pointer-events-none" : ""} w-12 h-6 transition`}
@@ -159,7 +158,7 @@ export function Toggle({ defaultOn, onChange, disabled }) {
       >
         <div className="rounded-full bg-white w-3/4 h-3/4" />
       </div>
-    </div>
+    </button>
   );
 }
 

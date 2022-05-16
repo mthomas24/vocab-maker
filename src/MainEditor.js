@@ -117,8 +117,12 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
       dragListener={false}
       onDragEnd={() => {
         setBeingDragged(false);
+        document.getSelection().removeAllRanges();
       }}
-      onDragStart={() => setBeingDragged(true)}
+      onDragStart={() => {
+        setBeingDragged(true);
+        document.getSelection().removeAllRanges();
+      }}
     >
       <motion.form
         autoComplete="off"

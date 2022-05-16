@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { MainContainer } from "./components";
+import React, { useEffect, useState } from "react";
+import { MainContainer, Toggle } from "./components";
 import Header, { HeaderButton } from "./Header";
 import { MdEdit, MdCopyAll, MdPrint } from "react-icons/md";
 import { Listbox } from "@headlessui/react";
 
+function Label({ children }) {
+  return <p className="font-semibold mb-1">{children}</p>;
+}
+
 function Select({ val, onChange, options, label }) {
   return (
-    <Listbox as="div" className="w-64 relative" value={val} onChange={onChange}>
-      <p className="font-bold mb-1">{label}</p>
+    <Listbox as="div" className="relative" value={val} onChange={onChange}>
+      <Label>{label}</Label>
       <Listbox.Button className="border border-gray-300 capitalize rounded-md bg-gray-50 py-1.5 w-full text-left px-3 relative focus:outline-none focus:ring-emerald-400 focus:ring-2">
         <span className="truncate">{val}</span>
         <span className="h-full flex items-center absolute right-2 top-0">
@@ -28,7 +32,7 @@ function Select({ val, onChange, options, label }) {
       </Listbox.Button>
       <Listbox.Options
         as="div"
-        className="bg-gray-50 py-1 rounded-md mt-2 absolute shadow-md w-full focus:outline-none"
+        className="z-10 bg-gray-50 py-1 rounded-md mt-2 absolute shadow-md w-full focus:outline-none"
       >
         {options.map(s => (
           <Listbox.Option
@@ -66,6 +70,14 @@ export default function ExportEditor({ terms }) {
   const [listStyle, setListStyle] = useState("none"); // "none" | "numbers" | "bullets"
   const [termSep, setTermSep] = useState("dash"); // "dash" | "colon"
   const [fontSize, setFontSize] = useState("16px");
+  const [title, setTitle] = useState(
+    () => localStorage.getItem("pageTitle") || "My Vocab List"
+  );
+  const [capitalTerms, setCapitalTerms] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("pageTitle", title);
+  }, [title]);
 
   const TERM_SEPS = { dash: " - ", colon: ": " };
 
@@ -77,7 +89,8 @@ export default function ExportEditor({ terms }) {
           txt="Copy to Clipboard"
           onClick={() =>
             navigator.clipboard.writeText(
-              terms.map(t => t.word + TERM_SEPS[termSep] + t.definition).join("\n")
+              (title ? title + "\n" : "") +
+                terms.map(t => t.word + TERM_SEPS[termSep] + t.definition).join("\n")
             )
           }
           Icn={MdCopyAll}
@@ -94,7 +107,7 @@ export default function ExportEditor({ terms }) {
           Back
         </Link> */}
 
-        <div className="print:hidden flex flex-wrap gap-x-16 gap-y-4 mb-8">
+        <div className="print:hidden grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-4 mb-8">
           <Select
             onChange={setTermStyle}
             val={termStyle}
@@ -129,39 +142,64 @@ export default function ExportEditor({ terms }) {
               "32px"
             ]}
           />
+          <div>
+            <Label>Page Title</Label>
+            <input
+              className="px-3 py-1.5 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-emerald-400 focus:ring-2"
+              placeholder="Some Title..."
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              type="text"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label>Capitalize Terms</Label>
+            <div className="flex items-center grow">
+              <Toggle defaultOn={capitalTerms} onChange={setCapitalTerms} />
+            </div>
+          </div>
         </div>
 
-        <ListElem
-          style={listStyle}
-          className="bg-white rounded-lg shadow-lge p-5 mb-6 leading-loose print:shadow-none
-        print:p-0 print:rounded"
+        <div
+          className="bg-white rounded-lg shadow-lge mb-6 leading-loose print:shadow-none print:!p-0 print:rounded"
+          style={{ padding: `calc(${fontSize} * 1.5)` }}
         >
-          {terms.map((term, idx) => (
-            <li
-              key={term.id}
-              style={{ fontSize: fontSize }}
-              className={
-                {
-                  none: "",
-                  bullets: "list-inside list-disc",
-                  numbers: "list-inside list-decimal"
-                }[listStyle]
-              }
+          {title && (
+            <h1
+              className="text-center font-extrabold mb-4 break-words"
+              style={{ fontSize: `calc(${fontSize} * 1.25)`, marginBottom: fontSize }}
             >
-              <span
+              {title}
+            </h1>
+          )}
+          <ListElem style={listStyle}>
+            {terms.map(term => (
+              <li
+                key={term.id}
+                style={{ fontSize: fontSize }}
                 className={
-                  { bold: "font-bold", underline: "underline", italic: "italic" }[
-                    termStyle
-                  ]
+                  {
+                    none: "",
+                    bullets: "list-inside list-disc",
+                    numbers: "list-inside list-decimal"
+                  }[listStyle]
                 }
               >
-                {term.word}
-              </span>
-              {TERM_SEPS[termSep]}
-              {term.definition}
-            </li>
-          ))}
-        </ListElem>
+                <span
+                  className={
+                    { bold: "font-bold", underline: "underline", italic: "italic" }[
+                      termStyle
+                    ] + (capitalTerms ? " capitalize" : "")
+                  }
+                >
+                  {term.word}
+                </span>
+                {TERM_SEPS[termSep]}
+                {term.definition}
+              </li>
+            ))}
+          </ListElem>
+        </div>
       </MainContainer>
     </>
   );
