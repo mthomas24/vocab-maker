@@ -20,6 +20,7 @@ import {
 import { motion, Reorder, useDragControls } from "framer-motion";
 import { Combobox } from "@headlessui/react";
 import { TailSpin } from "react-loading-icons";
+import TextareaAutosize from "react-autosize-textarea";
 
 function DefinitionInput({ term, update }) {
   const [text, setText] = useState(term.definition);
@@ -58,6 +59,7 @@ function DefinitionInput({ term, update }) {
         {/* Allows opening combobox options when the input is focused */}
         <Combobox.Button className="hidden" ref={btn} />
         <Combobox.Input
+          as={TextareaAutosize}
           placeholder="Enter a definition..."
           className={TextInputStyles + " w-full"}
           onChange={e => setText(e.target.value)}
@@ -145,10 +147,10 @@ function TermCard({ term, idx, remove, update, shouldAnimate }) {
           </button>
         </div>
         <hr className="-mx-4 my-3" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-wrap">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 flex-wrap">
           <div className="flex-grow">
             <label className={LabelStyles}>Word</label>
-            <input
+            <TextareaAutosize
               placeholder="Enter a word..."
               className={TextInputStyles + " w-full"}
               defaultValue={term.word}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { v4 as uuid } from "uuid";
 import { addModal, removeModal } from "./globalState";
@@ -49,39 +49,8 @@ export function Radio({ children, group, checked, onChange, disabled }) {
 }
 
 export const TextInputStyles =
-  "rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2";
+  "rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2 resize-none";
 export const LabelStyles = "block text-sm text-gray-500 bopacity-70 mb-1 z-0";
-
-// export function TextInput({
-//   labelText,
-//   placeholder,
-//   defaultVal,
-//   labelClass,
-//   inputClass,
-//   isTextarea,
-//   onChange,
-//   onBlur
-// }) {
-//   let inputProps = {
-//     className: `rounded-md bg-gray-100 px-2 py-1 border focus:outline-none focus:ring-emerald-400 focus:ring-2 ${inputClass}`,
-//     type: "text",
-//     defaultValue: defaultVal,
-//     placeholder: placeholder,
-//     onChange: onChange,
-//     onBlur: onBlur
-//   };
-
-//   return (
-//     <>
-//       {labelText && (
-//         <label className={`block text-sm text-gray-500 bopacity-70 mb-1 ${labelClass}`}>
-//           {labelText}
-//         </label>
-//       )}
-//       {isTextarea ? <textarea {...inputProps} /> : <input {...inputProps} />}
-//     </>
-//   );
-// }
 
 export function Modal({ children, open, onClose, classNames, noEscape }) {
   useEffect(() => {
